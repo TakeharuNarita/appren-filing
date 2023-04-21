@@ -5,9 +5,10 @@ require_relative 'hand'
 # @param none
 class Jacker
   extend CamelSnakeResolver
-  attr_accessor :location_num, :hands
+  attr_accessor :location_num, :hands, :bet
 
   def initialize(con, game)
+    @bet = bet
     @hand = Hand.new
     @hands = [Hand.new]
     @connection = con # TODO: bat

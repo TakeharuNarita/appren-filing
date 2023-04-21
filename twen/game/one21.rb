@@ -21,19 +21,26 @@ class One21
     # 人数を入力してください。
     how_many_npc.times { jackers_new(:NpcPlayer) }
     # 賭け金を入力してください。
+    how_many_bet
     @jackers.each { |j| 2.times { j.hands.each { _1.add @mountain.pull } } }
     self
   end
 
   def rep
     @consoles.each_with_index do |c, c_i|
-      @jackers.each_with_index do |j, j_i|
+      @jackers.each_with_index do |j, j_i|# jackerにカードは？を聞く
         if j_i == c_i
           j_str = c.jacker_str :you
         else
           j_str = c.jacker_str (snake j.class).to_sym, { num: j.location_num }
         end
-        j.hands.each {|hand| c.console_msg :draw, { name: j_str, suit: hand.index(1), num: hand.index(0)} }
+        j.hands.each do |hand|
+          hand.map.each do |unq|
+            suit = c.card_str @mountain.card.suit(unq)
+            num = c.card_str @mountain.card.num(unq)
+            c.console_msg :draw, { name: j_str, suit: suit, num: num }
+          end
+        end
       end
       # c.console_msg :your_hand, { hand: @jackers[i].hands.map(&:rep).join(' ') }
     end
@@ -50,6 +57,20 @@ class One21
       @consoles[0].console_msg :invalid_input
     end
     npcs_len
+  end
+
+  def how_many_bet
+    @consoles.each_with_index do |c, c_i|
+      bet = 0
+      loop do
+        bet = c.open_question(:how_many_bet, { cache: c.cache }).to_i
+        break if bet.between?(0, c.cache) # 範囲内(min, max を含みます)に~
+
+        c.console_msg :invalid_input
+      end
+      c.cache_bet = bet
+      @jackers[c_i].bet = bet
+    end
   end
 
   def jackers_new(symbol)

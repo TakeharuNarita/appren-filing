@@ -42,9 +42,9 @@ module Words
           autumn: 'ハート',
           winter: 'スペード',
           num1: 'エース',
-          numb11: 'J',
-          numb12: 'Q',
-          numb13: 'K'
+          num11: 'J',
+          num12: 'Q',
+          num13: 'K'
         }
       end
 

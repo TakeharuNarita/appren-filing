@@ -5,12 +5,13 @@ require_relative '../card/cards'
 # @param none
 class Mountain
   include CamelSnakeResolver
+  attr_reader :card
 
   def initialize(card_sym, val)
     require_relative '../card/card_n13_s4_j0'
-    card = constants('../card', card_sym).new
+    @card = constants('../card', card_sym).new
     @deck = []
-    val.times { (0...(card.len)).each { @deck.push _1 } }
+    val.times { (0...(@card.len)).each { @deck.push _1 } }
   end
 
   def shuffle

@@ -45,6 +45,12 @@ class Handle
     @words.replace Words::Japanese.jacker[msg], repl
   end
 
+  def card_str(msg, repl = {})
+    return msg unless Words::Japanese.card[msg]
+
+    @words.replace Words::Japanese.card[msg], repl
+  end
+
   def cache_bet=(val)
     msg = @words.class.handle[:cache_bet]
     puts @words.replace msg, { cache: @cache.to_s, val: val.to_s }
