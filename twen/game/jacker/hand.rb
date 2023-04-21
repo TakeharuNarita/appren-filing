@@ -10,6 +10,10 @@ class Hand
     @tags.push val
   end
 
+  def add(val)
+    @tags.push val
+  end
+
   def index(ind)
     @tags[ind]
   end

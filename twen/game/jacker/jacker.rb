@@ -5,26 +5,11 @@ require_relative 'hand'
 # @param none
 class Jacker
   extend CamelSnakeResolver
-  def self.constant(constant_symbol) # rubocop:disable Metrics/MethodLength
-    begin
-      require_relative "./#{snakeization constant_symbol}"
-    rescue LoadError
-      "require_relative \"./#{snakeization constant_symbol}\""
-    end
-    case constant_symbol # TODO: hashmap
-    when :PersonPlayer
-      PersonPlayer
-    when :NpcPlayer
-      NpcPlayer
-    when :NpcDealer
-      NpcDealer
-    else
-      raise NoMethodError, "Need to add constants to class: '#{self}', constant_symbol: '#{constant_symbol}'"
-    end
-  end
+  attr_accessor :location_num, :hands
 
-  def initialize(con,game)
+  def initialize(con, game)
     @hand = Hand.new
+    @hands = [Hand.new]
     @connection = con # TODO: bat
     @game = game # TODO: bat
   end
