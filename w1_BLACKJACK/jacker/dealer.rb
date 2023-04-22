@@ -25,6 +25,17 @@ class Dealer < Jacker
 
   def draw_ynq(*)
     puts
-    @card.scoring(hands[0].unqs) <= 17
+    @card.scoring(hands[0].unqs) <= @card.limit * 17 / 21
+  end
+
+  def one_que(jkr, game, hand)
+    burst = @card.scoring(hand.unqs) > @card.limit
+    return false if burst
+
+    print "#{jkr.name}の"
+    print "現在の得点は#{@card.scoring(hand.unqs)}です。"
+    scn = draw_ynq("カードを引きますか？（Y/N）\n")
+    game.need_card(self) if scn
+    scn
   end
 end

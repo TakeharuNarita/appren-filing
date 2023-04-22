@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 
-require_relative 'player'
-require_relative 'dealer'
+require_relative '../jacker/player'
+require_relative '../jacker/dealer'
+require_relative '../jacker/npc'
 require_relative 'card'
+
+require 'byebug'
 # @param none
 class Game
   attr_accessor :deck, :player, :dealer, :limit
@@ -16,6 +19,8 @@ class Game
 
   def opening
     @jkrs = [Player.new(@card), Dealer.new(@card)]
+    npclen = how_many 'NPCの人数を入力してください。', 0..2
+    npclen.times { @jkrs << Npc.new(@card, "NPC_#{_1 + 1}") }
     self
   end
 
@@ -47,11 +52,25 @@ class Game
 
   private
 
+  def how_many(msg, rang)
+    x = rang.min
+    xn = rang.max
+    loop do
+      print "#{msg} (#{x}~#{xn})\n"
+      scn = gets.chomp.to_i
+
+      return scn if rang.cover?(scn)
+
+      puts "(#{x}~#{xn})内で入力してください。"
+    end
+  end
+
   def battles(dea, plas)
     plas.each do |pla|
+      str_no = plas.size > 1 ? 'は' : 'の'
       pla.hands.each do |hand|
-        str = pla.hands.size > 1 ? "#{hand}の" : ''
-        print "#{pla.name}の#{str}"
+        str = pla.hands.size > 1 ? "#{hand}は" : ''
+        print "#{pla.name}#{str}#{str_no}"
         battle(dea.hands[0], hand)
       end
     end
