@@ -1,24 +1,29 @@
 # frozen_string_literal: true
 
+require_relative 'handling_card'
 # @param none
 class Hand
   def initialize
-    @tags = []
+    @cards = []
   end
 
   def push(val)
-    @tags.push val
+    @cards << HandingCard.new(val)
   end
 
   def add(val)
-    @tags.push val
+    @cards << HandingCard.new(val)
+  end
+
+  def cards(ind)
+    @cards
   end
 
   def index(ind)
-    @tags[ind]
+    @cards[ind]
   end
 
   def map
-    @tags
+    @cards
   end
 end

@@ -22,37 +22,62 @@ class One21
     how_many_npc.times { jackers_new(:NpcPlayer) }
     # 賭け金を入力してください。
     how_many_bet
-    @jackers.each { |j| 2.times { j.hands.each { _1.add @mountain.pull } } }
+    self
+  end
+
+  def draws
+    @jackers.each do |j|
+      j.hands.each do |h|
+        2.times { h.add @mountain.pull }
+      end
+      draw_know(j)
+    end
     self
   end
 
   def rep
     @consoles.each_with_index do |c, c_i|
-      @jackers.each_with_index do |j, j_i|# jackerにカードは？を聞く
+      @jackers.each_with_index do |j, j_i|
         if j_i == c_i
           j_str = c.jacker_str :you
         else
           j_str = c.jacker_str (snake j.class).to_sym, { num: j.location_num }
         end
-        j.hands.each do |hand|
-          hand.map.each do |unq|
-            suit = c.card_str @mountain.card.suit(unq)
-            num = c.card_str @mountain.card.num(unq)
-            c.console_msg :draw, { name: j_str, suit: suit, num: num }
-          end
-        end
+        draw_know(j)
       end
-      # c.console_msg :your_hand, { hand: @jackers[i].hands.map(&:rep).join(' ') }
     end
+    self
   end
 
   private
+
+  def draw_know(jkr)
+    @consoles.each_with_index do |c, c_i|
+      who = jkr.location_num == c_i + 1 ? [:you] : [(snake jkr.class).to_sym, { num: jkr.location_num }]
+      jkr.hands.each do |hand|
+        hand.map.each_with_index do |handing, card_num|
+          draw_card_know(handing, card_num, c, who)
+        end
+      end
+    end
+  end
+
+  def draw_card_know(handing, card_num, console, who)
+    j_str = console.jacker_str(*who)
+    if who == [:you] || handing.permission % 10 == 4
+      suit = console.card_str @mountain.card.suit(handing.card_unq)
+      num = console.card_str @mountain.card.num(handing.card_unq)
+      console.console_msg :draw, { name: j_str, suit: suit, num: num }
+    else
+      console.console_msg :dont_know, { name: j_str, index: card_num + 1 }
+    end
+  end
 
   def how_many_npc
     npcs_len = 0
     loop do
       npcs_len = @consoles[0].open_question(:how_many_npc).to_i
-      break if npcs_len.between?(0, 3) # 範囲内(min, max を含みます)に~
+      break if npcs_len.between?(0, 2) # 範囲内(min, max を含みます)に~
 
       @consoles[0].console_msg :invalid_input
     end

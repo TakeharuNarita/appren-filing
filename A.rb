@@ -1,3 +1,5 @@
-def constantize
-  Sdsfdsfsdfs
-end
+
+3.times{|n|
+  puts 'hello'
+  puts n
+}

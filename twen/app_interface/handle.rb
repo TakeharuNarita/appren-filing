@@ -21,7 +21,7 @@ class Handle
     gam = Words::Japanese.game[(snake game.class.name).to_sym]
     # '{{ game }}を開始します。'
     puts @words.replace @words.class.console[:open], { game: gam }
-    game.opening.rep
+    game.opening.draws
   end
 
   def console_msg(msg, repl = {})

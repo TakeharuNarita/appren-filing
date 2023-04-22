@@ -21,7 +21,7 @@ module Words
           you_win: '#あなたの勝ちです！',
           winner: '{{ name }}の勝ちです。',
           choice: '選択肢: ',
-          how_many_npc: 'NPCの人数を入力してください。(0 ~ 3)',
+          how_many_npc: 'NPCの人数を入力してください。(0 ~ 2)',
           how_many_bet: 'ベットする金額を入力してください。(1 ~ {{ cache }})',
           invalid_input: '入力が不正です。'
         }
@@ -41,16 +41,16 @@ module Words
           summer: 'ダイヤ',
           autumn: 'ハート',
           winter: 'スペード',
-          num1: 'エース',
-          num11: 'J',
-          num12: 'Q',
-          num13: 'K'
+          1 => 'エース',
+          11 => 'J',
+          12 => 'Q',
+          13 => 'K'
         }
       end
 
       def jacker
         {
-          npc_dealer: 'ディーラー{{ num }}',
+          npc_dealer: 'ディーラー',
           npc_player: 'NPCプレイヤー{{ num }}',
           you: 'あなた'
         }
@@ -66,7 +66,7 @@ module Words
       word = String.new(word)
       hash.keys.inject(word) do |str, key|
         reg = /{{ #{key} }}/
-        str.gsub(reg, hash[key].to_s) if str.match(reg)
+        str.match(reg) ? str.gsub(reg, hash[key].to_s) : str
       end
     end
   end
