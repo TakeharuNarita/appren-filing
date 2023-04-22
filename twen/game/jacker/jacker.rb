@@ -29,6 +29,10 @@ class Jacker
     no_method(__method__)
   end
 
+  def permissions(index)
+    index ? 400 : 0
+  end
+
   def score_print
     @connection.now_score score, self, nil
   end

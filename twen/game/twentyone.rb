@@ -62,14 +62,11 @@ class Twentyone
     end
   end
 
-  def scoring(unqs) # rubocop:disable Metrics/AbcSize
-    nums = unqs.map { card.numb(_1) > 10 ? 10 : card.numb(_1) }
-    patterns = []
-    patterns.push(nums.sum)
-    nums.each do |num|
-      patterns.push(nums.sum + 10) if num == 1
-    end
-    patterns.find_all { _1 <= @upper_limit }.max
+  def scoring(unqs)
+    nums = unqs.map { |num| card.numb(num) > 10 ? 10 : card.numb(num) }
+    patterns = [nums.sum]
+    patterns << nums.sum + 10 if nums.include?(1)
+    patterns.select { |pattern| pattern <= @upper_limit }.max
   end
 
   private

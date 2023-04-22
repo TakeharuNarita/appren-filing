@@ -22,10 +22,15 @@ class Handle
     # '{{ game }}を開始します。'
     puts @words.replace @words.class.console[:open], { game: gam }
     game.opening.draws
+    game.draws_loop
   end
 
   def console_msg(msg, repl = {})
     puts @words.replace Words::Japanese.console[msg], repl
+  end
+
+  def console_msg_one(msg, repl = {})
+    print @words.replace Words::Japanese.console[msg], repl
   end
 
   def closed_question(choice, msg, repl = {})

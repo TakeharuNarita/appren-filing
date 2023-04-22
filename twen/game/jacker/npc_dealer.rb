@@ -16,4 +16,8 @@ class NpcDealer < JackerNpc
     @connection.now_score score, self, score if score < 17
     score < 17 ? 1 : nil
   end
+
+  def permissions(index)
+    index == 0 ? 444 : 0
+  end
 end

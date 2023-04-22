@@ -7,4 +7,8 @@ class NpcPlayer < JackerNpc
     @connection.now_score score, self, score if score < 17
     score < rand(15..20) ? 1 : nil
   end
+
+  def permissions(index)
+    index ? 444 : 0
+  end
 end

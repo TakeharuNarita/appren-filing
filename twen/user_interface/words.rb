@@ -41,7 +41,7 @@ module Words
           summer: 'ダイヤ',
           autumn: 'ハート',
           winter: 'スペード',
-          1 => 'エース',
+          1 => 'A',
           11 => 'J',
           12 => 'Q',
           13 => 'K'
