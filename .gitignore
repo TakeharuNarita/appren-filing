@@ -8,3 +8,5 @@ tempCodeRunnerFile.*
 /.classpath
 /.rubocop.yml
 # end template
+
+# /.byebug_history
