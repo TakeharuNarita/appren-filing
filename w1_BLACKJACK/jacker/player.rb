@@ -3,8 +3,8 @@
 require_relative 'jacker'
 # @param none
 class Player < Jacker
-  def initialize(game, name: 'あなた')
-    super(game)
+  def initialize(game, bet, name: 'あなた')
+    super(game, bet)
     @name = name
   end
 end

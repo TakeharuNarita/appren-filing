@@ -8,10 +8,11 @@ class Jacker
   include Console
   attr_accessor :hands, :name, :role
 
-  def initialize(game)
+  def initialize(game, bet = 0)
+    @bet = bet
     @game = game
     @card = game.card
-    @hands = [Hand.new(@card)]
+    @hands = [Hand.new(@card, @bet)]
     @role = :player
   end
 
@@ -65,6 +66,8 @@ class Jacker
   end
 
   def ac_doble_down(hand_index = 0)
+    @game.bet(@bet)
+    @hands[hand_index].bet += @bet
     @game.need_card(self)
     puts total(hand_index, now: true)
     bur = @hands[hand_index].burst?
@@ -72,15 +75,18 @@ class Jacker
   end
 
   def ac_split(hand_index = 0)
-    hand = Hand.new(@card, hand_index + 2)
+    @game.bet(@bet)
+    hand = Hand.new(@card, @bet, hand_index + 2)
     hand.unqs << @hands[hand_index].unqs.pop
     @hands << hand
     @hands.each_index { ac_none(_1) }
   end
 
-  def ac_surrender
+  def ac_surrender(hand_index = 0)
     puts 'サレンダーしました。'
-    @game.surrender(self)
+    @hands[hand_index].loser = true
+    @game.profit(@hands[hand_index].bet / 2)
+    @hands[hand_index].bet = 0
   end
 
   def loser

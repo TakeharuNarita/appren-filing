@@ -3,8 +3,8 @@
 require_relative 'jacker'
 # @param none
 class Npc < Jacker
-  def initialize(game, name = 'npc')
-    super(game)
+  def initialize(game, bet, name = 'npc')
+    super(game, bet)
     @name = name
     @role = :npc
   end

@@ -2,9 +2,10 @@
 
 # @param none
 class Hand
-  attr_accessor :unqs, :card, :trash, :bet, :name
+  attr_accessor :unqs, :card, :trash, :bet, :name, :loser
 
-  def initialize(card, name = 1)
+  def initialize(card, bet = 0, name = 1)
+    @bet = bet
     @name = name
     @unqs = []
     @card = card
