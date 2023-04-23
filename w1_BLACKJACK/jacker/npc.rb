@@ -13,6 +13,8 @@ class Npc < Jacker
     act_branch(0)
   end
 
+  private
+
   def ynq(*)
     puts
     draw_logic

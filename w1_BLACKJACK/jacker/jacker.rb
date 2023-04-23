@@ -6,7 +6,8 @@ require_relative 'hand'
 # @param none
 class Jacker
   include Console
-  attr_accessor :hands, :name, :role
+  attr_accessor :hands, :name
+  attr_reader :role
 
   def initialize(game, bet = 0)
     @bet = bet
@@ -21,6 +22,14 @@ class Jacker
     print "カードは#{@card.suit(unq)}の#{@card.rank(unq)}です。"
   end
 
+  def act_que
+    totals
+    cho = %w[何もしない サレンダー ダブルダウン]
+    cho << 'スプリット' if @card.scoring([@hands[0].unqs[0]]) == @card.scoring([@hands[0].unqs[1]])
+    c_ind = choice_que(cho)
+    act_branch(c_ind)
+  end
+
   def totals(now: false)
     @hands.each_index { puts total(_1, now) }
   end
@@ -31,13 +40,7 @@ class Jacker
     "#{@name}の#{str1}#{str2}得点は#{@hands[index].score}です。"
   end
 
-  def act_que
-    totals
-    cho = %w[何もしない サレンダー ダブルダウン]
-    cho << 'スプリット' # if @card.scoring([@hands[0].unqs[0]]) == @card.scoring([@hands[0].unqs[1]])
-    c_ind = choice_que(cho)
-    act_branch(c_ind)
-  end
+  private
 
   def act_branch(c_ind)
     case c_ind
@@ -87,8 +90,5 @@ class Jacker
     @hands[hand_index].loser = true
     @game.profit(@hands[hand_index].bet / 2)
     @hands[hand_index].bet = 0
-  end
-
-  def loser
   end
 end

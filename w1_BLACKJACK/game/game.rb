@@ -40,13 +40,6 @@ class Game
     self
   end
 
-  def need_card(jkr, hand_index = 0)
-    print "#{jkr.name}の引いた"
-    jkr.hit(@deck.pop, hand_index)
-    puts
-    self
-  end
-
   def first_hit
     @jkrs.each { |jkr| 2.times { need_card jkr } }
     self
@@ -69,6 +62,13 @@ class Game
     fit = 0
     @jkrs.find { _1.role == :player }.hands.each { fit = _1.bet }
     profit(fit) if fit != 0
+  end
+
+  def need_card(jkr, hand_index = 0)
+    print "#{jkr.name}の引いた"
+    jkr.hit(@deck.pop, hand_index)
+    puts
+    self
   end
 
   private

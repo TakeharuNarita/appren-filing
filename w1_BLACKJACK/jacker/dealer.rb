@@ -20,6 +20,8 @@ class Dealer < Jacker
     act_branch(0)
   end
 
+  private
+
   def ac_none(hand_index = 0)
     print "#{@name}の引いた"
     unq = hands[0].unqs[1]

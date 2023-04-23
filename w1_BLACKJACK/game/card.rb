@@ -2,7 +2,7 @@
 
 # @param none
 class Card
-  attr_accessor :limit, :len, :wide
+  attr_reader :limit, :len, :wide
 
   def initialize(limit)
     @limit = limit
