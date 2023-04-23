@@ -1,13 +1,17 @@
 # frozen_string_literal: true
 
+require_relative '../game/console'
+
 require_relative 'hand'
 # @param none
 class Jacker
+  include Console
   attr_accessor :hands, :name, :role
 
-  def initialize(card)
-    @card = card
-    @hands = [Hand.new(card)]
+  def initialize(game)
+    @game = game
+    @card = game.card
+    @hands = [Hand.new(@card)]
     @role = :player
   end
 
@@ -16,46 +20,69 @@ class Jacker
     print "カードは#{@card.suit(unq)}の#{@card.rank(unq)}です。"
   end
 
-  def adds_que(game)
-    @hands.each do |hand|
-      loop do
-        break unless one_que(self, game, hand)
-      end
+  def totals(now: false)
+    @hands.each_index { puts total(_1, now) }
+  end
+
+  def total(index = 0, now = false) # rubocop:disable Style/OptionalBooleanParameter
+    str1 = @hands.size > 1 ? "手札#{@hands[index].name}の" : ''
+    str2 = now ? '現在の' : ''
+    "#{@name}の#{str1}#{str2}得点は#{@hands[index].score}です。"
+  end
+
+  def act_que
+    totals
+    cho = %w[何もしない サレンダー ダブルダウン]
+    cho << 'スプリット' # if @card.scoring([@hands[0].unqs[0]]) == @card.scoring([@hands[0].unqs[1]])
+    c_ind = choice_que(cho)
+    act_branch(c_ind)
+  end
+
+  def act_branch(c_ind)
+    case c_ind
+    when 0
+      ac_none
+    when 1
+      ac_surrender
+    when 2
+      ac_doble_down
+    when 3
+      ac_split
     end
   end
 
-  def totals
-    @hands.each do |hand|
-      str = @hands.size > 1 ? "#{hand}の" : ''
-      puts "#{@name}の#{str}得点は#{hand.score}です。"
-    end
-  end
-
-  private
-
-  def draw_ynq(msg)
+  def ac_none(hand_index = 0)
     loop do
-      print msg
-      scn = gets.chomp
+      print total(hand_index, now: true)
+      bur = @hands[hand_index].burst?
+      puts 'バーストしました。' if bur
+      break if bur
 
-      return true if scn == 'Y'
-
-      return false if scn == 'N'
-
-      puts 'YかNを入力してください。'
+      scn = ynq("カードを引きますか？（Y/N）\n")
+      @game.need_card(self, hand_index) if scn
+      break unless scn
     end
   end
 
-  def one_que(jkr, game, hand)
-    print "#{jkr.name}の"
-    print "#{hand}の" if @hands.size > 1
-    print "現在の得点は#{@card.scoring(hand.unqs)}です。"
-    burst = @card.scoring(hand.unqs) > @card.limit
-    puts 'バーストしました。' if burst
-    return false if burst
+  def ac_doble_down(hand_index = 0)
+    @game.need_card(self)
+    puts total(hand_index, now: true)
+    bur = @hands[hand_index].burst?
+    puts 'バーストしました。' if bur
+  end
 
-    scn = draw_ynq("カードを引きますか？（Y/N）\n")
-    game.need_card(self) if scn
-    scn
+  def ac_split(hand_index = 0)
+    hand = Hand.new(@card, hand_index + 2)
+    hand.unqs << @hands[hand_index].unqs.pop
+    @hands << hand
+    @hands.each_index { ac_none(_1) }
+  end
+
+  def ac_surrender
+    puts 'サレンダーしました。'
+    @game.surrender(self)
+  end
+
+  def loser
   end
 end

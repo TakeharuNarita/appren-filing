@@ -3,15 +3,22 @@
 require_relative 'jacker'
 # @param none
 class Npc < Jacker
-  def initialize(card, name = 'NPC')
-    super(card)
+  def initialize(game, name = 'npc')
+    super(game)
     @name = name
     @role = :npc
   end
 
-  def draw_ynq(*)
+  def act_que
+    act_branch(0)
+  end
+
+  def ynq(*)
     puts
-    rnd = rand(@card.limit * 16 / 21..@card.limit - 1)
-    @card.scoring(hands[0].unqs) <= rnd
+    draw_logic
+  end
+
+  def draw_logic
+    @card.scoring(hands[0].unqs) <= @card.limit * rand(14..19) / 21
   end
 end

@@ -4,5 +4,5 @@ require_relative './game/game'
 # @param none
 
 puts 'ブラックジャックを開始します。'
-Game.new.opening.first_hit.adds_ques.closing
+Game.new.opening.first_hit.jkrs_ques.closing
 puts 'ブラックジャックを終了します。'

@@ -2,9 +2,10 @@
 
 # @param none
 class Hand
-  attr_accessor :unqs, :card, :burst, :calc_scora
+  attr_accessor :unqs, :card, :trash, :bet, :name
 
-  def initialize(card)
+  def initialize(card, name = 1)
+    @name = name
     @unqs = []
     @card = card
   end
@@ -14,8 +15,10 @@ class Hand
   end
 
   def score
-    @burst = @card.burst?(@unqs)
-    @calc_scora = @burst ? 0 : @card.scoring(@unqs)
     @card.scoring(@unqs)
+  end
+
+  def burst?
+    @card.burst?(@unqs)
   end
 end
