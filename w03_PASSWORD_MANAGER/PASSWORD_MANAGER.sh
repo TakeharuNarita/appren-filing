@@ -36,6 +36,7 @@ get_password() {
 
 echo 'パスワードマネージャーへようこそ！'
 
+
 while [ true ]
 do
   echo '次の選択肢から入力してください(a:Add Password/g:Get Password/e:Exit)：'
