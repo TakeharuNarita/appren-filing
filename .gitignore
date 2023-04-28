@@ -7,6 +7,7 @@ tempCodeRunnerFile.*
 /.DS_Store
 /.classpath
 /.rubocop.yml
+/.vscode
 # end template
 
 /.byebug_history
