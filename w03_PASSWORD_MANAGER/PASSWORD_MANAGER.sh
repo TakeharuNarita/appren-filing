@@ -35,6 +35,7 @@ function v_home(){
   v_loop $option
 }
 
+# @param $1: オプションの文字列
 function v_loop() {
   option=$1
   case $option in
@@ -42,7 +43,8 @@ function v_loop() {
       v_add_password
       ;;
     "Get Password"|"g"|"G")
-      v_get_password
+      # v_get_password
+      v_home
       ;;
     "Exit"|"e"|"E")
       ;;
@@ -63,9 +65,10 @@ function v_add_password() {
 }
 
 function v_get_password() {
-  echo
+  MATCHS=$(grep "^$SERVICE:.\+:.\+$" "$CURRENT/password.txt")
 }
 
+# @param $1: 追加する行の文字列改行なし
 function v_gpg_add () {
   line=$1
   exist=$(gpg -q -d --batch --yes --passphrase "${PHRASE}" "${GPG_FILE}")
