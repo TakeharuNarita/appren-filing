@@ -20,15 +20,8 @@ function v_phrase_check(){
     status=$?; echo; [[ $status != 0 ]] && v_attempt
   else
     echo "" | gpg -q -c --batch --yes --passphrase "${PHRASE}" --output "${GPG_FILE}"
-    [ -t 0 ] && echo -e "'password.gpg'が存在しないため、新たなパスワードファイルを作成しました。"
+    [ -t 0 ] && echo -e "\n'password.gpg'が存在しないため、新たなパスワードファイルを作成しました。"
   fi
-}
-
-function hilyo(){
-  echo "hilyo"
-}
-function err(){
-  echo "err"
 }
 
 function v_attempt(){
@@ -61,12 +54,12 @@ function v_loop() {
 }
 
 function v_add_password() {
-  read -p "サービス名を入力してください：" SERVICE; [ -t 0 ] && echo
-  read -p "ユーザー名を入力してください：" USER; [ -t 0 ] && echo
-  read -sp "パスワードを入力してください：" PASS; [ -t 0 ] && echo
+  read -p "サービス名を入力してください：" service
+  read -p "ユーザー名を入力してください：" user
+  read -sp "パスワードを入力してください：" pass
   
-  b_gpg_add "${SERVICE}:${USER}:${PASS}"
-  echo 'パスワードの追加は成功しました。'
+  v_gpg_add "${service}:${user}:${pass}"
+  # echo "debug: $?"
   v_home
 }
 
@@ -79,10 +72,11 @@ function s_gpg_read () {
    echo $TEXT
 }
 
-function b_gpg_add () {
+function v_gpg_add () {
   line=$1
   exist=$(gpg -q -d --batch --yes --passphrase "${PHRASE}" "${GPG_FILE}")
   echo -e "${line}\n${exist}" | gpg -q -c --batch --yes --passphrase "${PHRASE}" --output ${GPG_FILE}
+  [ -t 0 ] && echo 'パスワードの追加は成功しました。'
 }
 
 main
