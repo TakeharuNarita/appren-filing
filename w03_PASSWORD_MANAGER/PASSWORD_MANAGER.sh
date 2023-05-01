@@ -16,20 +16,11 @@ function v_set_phrase(){
 
 function v_phrase_check(){
   if [ -f $PW_GPG ]; then
-    # gpg -q -d --batch --yes --passphrase "${PHRASE}" "${PW_GPG}" 2>/dev/null || Vattempt
-    # gpg -q -d --batch --yes --passphrase "${PHRASE}" "${PW_GPG}" >/dev/null 2>&1 || v_attempt
-    # gpg -q -d --batch --yes --passphrase "${PHRASE}" "${PW_GPG}" 1> /dev/null 2> err
-    output=$(gpg -q -d --batch --yes --passphrase "${PHRASE}" "${PW_GPG}" 2> >(read -d '' err_output))
-    echo $err_output
-    if [ -s "$err_output" ]; then
-      err
-    else
-      hilyo
-    fi
-
+    gpg -q -d --batch --yes --passphrase "${PHRASE}" "${PW_GPG}" > /dev/null 2> /dev/null; status=$?; echo
+    [[ $status != 0 ]] && v_attempt
   else
     echo "" | gpg -q -c --batch --yes --passphrase "${PHRASE}" --output "${PW_GPG}"
-    [ -t 0 ] && echo -e "\n'password.gpg'が存在しないため、新たなパスワードファイルを作成しました。"
+    [ -t 0 ] && echo -e "'password.gpg'が存在しないため、新たなパスワードファイルを作成しました。"
   fi
 }
 
@@ -41,7 +32,7 @@ function err(){
 }
 
 function v_attempt(){
-  echo -e "\033[31m\ngpg Error: 誤ったパスフレーズを入力した可能性があります。\033[0m"
+  echo -e "\033[31mgpg Error: 誤ったパスフレーズを入力した可能性があります。\033[0m"
   ATTEMPT=`expr $ATTEMPT + 1`
   v_set_phrase
 }
