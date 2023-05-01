@@ -11,7 +11,7 @@ function c () {
 }
 
 function d () {
-   TEXT=$(gpg --decrypt test.txt.gpg)
+   TEXT=$(gpg -d test.txt.gpg)
    echo $TEXT
 }
 
