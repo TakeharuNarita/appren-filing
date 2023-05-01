@@ -32,27 +32,24 @@ function v_attempt(){
 
 function v_home(){
   read -p "次の選択肢から入力してください(Add Password/Get Password/Exit)：" option;
-  v_loop $option
-}
-
-# @param $1: オプションの文字列
-function v_loop() {
-  option=$1
-  case $option in
-    "Add Password"|"a"|"A")
-      v_add_password
-      ;;
-    "Get Password"|"g"|"G")
-      # v_get_password
-      v_home
-      ;;
-    "Exit"|"e"|"E")
-      ;;
-    *)
-      read -p "入力が間違えています。Add Password/Get Password/Exit から入力してください。" option;
-      v_loop $option
-      ;;
-  esac
+  while [ true ]; do
+    case $option in
+      "Add Password"|"a"|"A")
+        v_add_password
+        read -p "次の選択肢から入力してください(Add Password/Get Password/Exit)：" option;
+        ;;
+      "Get Password"|"g"|"G")
+        v_get_password
+        read -p "次の選択肢から入力してください(Add Password/Get Password/Exit)：" option;
+        ;;
+      "Exit"|"e"|"E")
+        break
+        ;;
+      *)
+        read -p "入力が間違えています。Add Password/Get Password/Exit から入力してください。" option;
+        ;;
+    esac
+  done
 }
 
 function v_add_password() {
@@ -61,11 +58,21 @@ function v_add_password() {
   read -sp "パスワードを入力してください：" pass
   
   v_gpg_add "${service}:${user}:${pass}"
-  v_home
 }
 
 function v_get_password() {
-  MATCHS=$(grep "^$SERVICE:.\+:.\+$" "$CURRENT/password.txt")
+  exist=$(gpg -q -d --batch --yes --passphrase "${PHRASE}" "${GPG_FILE}")
+  read -p "サービス名を入力してください：" service
+  matchs=$(echo "${exist}" | grep "^$service:.\+:.\+$")
+  [ -z "${matchs}" ] && echo "そのサービスは登録されていません。" && return
+  echo "--------------------------------"
+  echo "${matchs}" | while IFS= read -r line; do
+      IFS=':' read -ra cells <<< "${line}"
+      echo "サービス名: ${cells[0]}"
+      echo "ユーザー名: ${cells[1]}"
+      echo "パスワード: ${cells[2]}"
+      echo "--------------------------------"
+  done
 }
 
 # @param $1: 追加する行の文字列改行なし
@@ -77,4 +84,3 @@ function v_gpg_add () {
 }
 
 main
-# echo "debug: $?"

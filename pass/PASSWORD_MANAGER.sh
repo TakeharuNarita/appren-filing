@@ -52,3 +52,7 @@ do
     echo 'Error'
   fi
 done
+
+
+# echo "debug: $?"
+# read -d '' err_output
