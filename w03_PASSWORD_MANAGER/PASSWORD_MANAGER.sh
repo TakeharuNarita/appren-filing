@@ -63,11 +63,11 @@ function v_add_password() {
 function v_get_password() {
   exist=$(gpg -q -d --batch --yes --passphrase "${PHRASE}" "${GPG_FILE}")
   read -p "サービス名を入力してください：" service
-  matchs=$(echo "${exist}" | grep "^$service:.\+:.\+$")
+  matchs=$(echo "${exist}" | grep "^${service}:.\+:.\+$")
   [ -z "${matchs}" ] && echo "そのサービスは登録されていません。" && return
   echo "--------------------------------"
   echo "${matchs}" | while IFS= read -r line; do
-      IFS=':' read -ra cells <<< "${line}"
+      IFS=":" read -ra cells <<< "${line}"
       echo "サービス名: ${cells[0]}"
       echo "ユーザー名: ${cells[1]}"
       echo "パスワード: ${cells[2]}"
@@ -75,11 +75,11 @@ function v_get_password() {
   done
 }
 
-# @param $1: 追加する行の文字列改行なし
+# @param $1: 追加する行の文字列、改行なし
 function v_gpg_add () {
   line=$1
   exist=$(gpg -q -d --batch --yes --passphrase "${PHRASE}" "${GPG_FILE}")
-  echo -e "${line}\n${exist}" | gpg -q -c --batch --yes --passphrase "${PHRASE}" --output ${GPG_FILE}
+  echo -e "${line}\n${exist}" | gpg -q -c --batch --yes --passphrase "${PHRASE}" --output "${GPG_FILE}"
   [ -t 0 ] && echo -e "\nパスワードの追加は成功しました。"
 }
 
