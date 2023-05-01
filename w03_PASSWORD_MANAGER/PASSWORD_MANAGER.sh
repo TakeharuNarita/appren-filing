@@ -1,6 +1,6 @@
 function main(){
   ATTEMPT=0
-  PW_GPG=`dirname "$0"`"/password.gpg"
+  GPG_FILE=`dirname "$0"`"/password.gpg"
   echo "パスワードマネージャーへようこそ！"
   v_set_phrase
   v_home
@@ -15,11 +15,11 @@ function v_set_phrase(){
 }
 
 function v_phrase_check(){
-  if [ -f $PW_GPG ]; then
-    gpg -q -d --batch --yes --passphrase "${PHRASE}" "${PW_GPG}" > /dev/null 2> /dev/null; status=$?; echo
-    [[ $status != 0 ]] && v_attempt
+  if [ -f $GPG_FILE ]; then
+    gpg -q -d --batch --yes --passphrase "${PHRASE}" "${GPG_FILE}" > /dev/null 2> /dev/null
+    status=$?; echo; [[ $status != 0 ]] && v_attempt
   else
-    echo "" | gpg -q -c --batch --yes --passphrase "${PHRASE}" --output "${PW_GPG}"
+    echo "" | gpg -q -c --batch --yes --passphrase "${PHRASE}" --output "${GPG_FILE}"
     [ -t 0 ] && echo -e "'password.gpg'が存在しないため、新たなパスワードファイルを作成しました。"
   fi
 }
@@ -81,8 +81,8 @@ function s_gpg_read () {
 
 function b_gpg_add () {
   line=$1
-  exist=$(gpg -q -d --batch --yes --passphrase "${PHRASE}" "${PW_GPG}")
-  echo -e "${line}\n${exist}" | gpg -q -c --batch --yes --passphrase "${PHRASE}" --output ${PW_GPG}
+  exist=$(gpg -q -d --batch --yes --passphrase "${PHRASE}" "${GPG_FILE}")
+  echo -e "${line}\n${exist}" | gpg -q -c --batch --yes --passphrase "${PHRASE}" --output ${GPG_FILE}
 }
 
 main
