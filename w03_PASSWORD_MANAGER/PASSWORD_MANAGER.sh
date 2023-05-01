@@ -37,7 +37,7 @@ function home(){
   done
 }
 
-@param $1: オプション文字列
+# @param $1: オプション文字列
 function select_option(){
   option=$1
   case $option in
