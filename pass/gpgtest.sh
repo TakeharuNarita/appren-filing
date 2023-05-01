@@ -57,8 +57,8 @@ function get_password {
 }
 
 function main {
+  echo "パスワードマネージャーへようこそ！"
   while true; do
-    echo "パスワードマネージャーへようこそ！"
     echo "次の選択肢から入力してください(Add Password/Get Password/Exit)："
     read option
 
