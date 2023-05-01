@@ -59,7 +59,6 @@ function v_add_password() {
   read -sp "パスワードを入力してください：" pass
   
   v_gpg_add "${service}:${user}:${pass}"
-  # echo "debug: $?"
   v_home
 }
 
@@ -67,16 +66,12 @@ function v_get_password() {
   echo
 }
 
-function s_gpg_read () {
-   TEXT=$(gpg -d test.txt.gpg)
-   echo $TEXT
-}
-
 function v_gpg_add () {
   line=$1
   exist=$(gpg -q -d --batch --yes --passphrase "${PHRASE}" "${GPG_FILE}")
   echo -e "${line}\n${exist}" | gpg -q -c --batch --yes --passphrase "${PHRASE}" --output ${GPG_FILE}
-  [ -t 0 ] && echo 'パスワードの追加は成功しました。'
+  [ -t 0 ] && echo -e "\nパスワードの追加は成功しました。"
 }
 
 main
+# echo "debug: $?"
