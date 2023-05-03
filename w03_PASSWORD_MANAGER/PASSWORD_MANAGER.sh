@@ -4,48 +4,48 @@ main(){
   ATTEMPT=0
   GPG_FILE=`dirname "$0"`"/password.gpg"
   echo "パスワードマネージャーへようこそ！"
-  set_phrase
-  home
+  SetPhrase
+  Home
 }
 
-set_phrase(){
+SetPhrase(){
   [ $ATTEMPT -gt 2 ] && echo -e "\033[31m試行回数が上限に達しました。\033[0m" && exit 1
   read -sp "パスフレーズを入力してください：" PHRASE;
-  phrase_check
+  PhraseCheck
 }
 
-phrase_check(){
+PhraseCheck(){
   if [ -f $GPG_FILE ]; then
     gpg -q -d --batch --yes --passphrase "${PHRASE}" "${GPG_FILE}" > /dev/null 2> /dev/null
-    status=$?; echo; [[ $status != 0 ]] && attempt
+    status=$?; echo; [[ $status != 0 ]] && Attempt
   else
     echo "" | gpg -q -c --batch --yes --passphrase "${PHRASE}" --output "${GPG_FILE}"
     [ -t 0 ] && echo -e "\n'password.gpg'が存在しないため、新たなパスワードファイルを作成しました。"
   fi
 }
 
-attempt(){
+Attempt(){
   echo -e "\033[31mgpg Error: 誤ったパスフレーズを入力した可能性があります。\033[0m"
   ATTEMPT=$(expr $ATTEMPT + 1)
-  set_phrase
+  SetPhrase
 }
 
-home(){
+Home(){
   while true; do
     read -p "次の選択肢から入力してください(Add Password/Get Password/Exit)：" option;
-    select_option "${option}"
+    SelectOption "${option}"
   done
 }
 
 # @param $1: オプション文字列
-select_option(){
+SelectOption(){
   option=$1
   case $option in
     "Add Password"|"a"|"A")
-      add_password
+      AddPassword
       ;;
     "Get Password"|"g"|"G")
-      get_password
+      GetPassword
       ;;
     "Exit"|"e"|"E")
       echo "Thank you!"
@@ -57,15 +57,15 @@ select_option(){
   esac
 }
 
-add_password() {
+AddPassword() {
   read -p "サービス名を入力してください：" service
   read -p "ユーザー名を入力してください：" user
   read -sp "パスワードを入力してください：" pass
   
-  gpg_add "${service}:${user}:${pass}"
+  GpgAdd "${service}:${user}:${pass}"
 }
 
-get_password() {
+GetPassword() {
   exist=$(gpg -q -d --batch --yes --passphrase "${PHRASE}" "${GPG_FILE}")
   read -p "サービス名を入力してください：" service
   matchs=$(echo "${exist}" | grep "^${service}:.\+:.\+$")
@@ -81,7 +81,7 @@ get_password() {
 }
 
 # @param $1: 追加する行の文字列、改行なし
-gpg_add () {
+GpgAdd () {
   line=$1
   exist=$(gpg -q -d --batch --yes --passphrase "${PHRASE}" "${GPG_FILE}")
   echo -e "${line}\n${exist}" | gpg -q -c --batch --yes --passphrase "${PHRASE}" --output "${GPG_FILE}"
