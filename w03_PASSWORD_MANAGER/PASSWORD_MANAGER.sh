@@ -1,6 +1,6 @@
 #!/bin/bash
 
-function main(){
+main(){
   ATTEMPT=0
   GPG_FILE=`dirname "$0"`"/password.gpg"
   echo "パスワードマネージャーへようこそ！"
@@ -8,13 +8,13 @@ function main(){
   home
 }
 
-function set_phrase(){
+set_phrase(){
   [ $ATTEMPT -gt 2 ] && echo -e "\033[31m試行回数が上限に達しました。\033[0m" && exit 1
   read -sp "パスフレーズを入力してください：" PHRASE;
   phrase_check
 }
 
-function phrase_check(){
+phrase_check(){
   if [ -f $GPG_FILE ]; then
     gpg -q -d --batch --yes --passphrase "${PHRASE}" "${GPG_FILE}" > /dev/null 2> /dev/null
     status=$?; echo; [[ $status != 0 ]] && attempt
@@ -24,13 +24,13 @@ function phrase_check(){
   fi
 }
 
-function attempt(){
+attempt(){
   echo -e "\033[31mgpg Error: 誤ったパスフレーズを入力した可能性があります。\033[0m"
   ATTEMPT=$(expr $ATTEMPT + 1)
   set_phrase
 }
 
-function home(){
+home(){
   while true; do
     read -p "次の選択肢から入力してください(Add Password/Get Password/Exit)：" option;
     select_option "${option}"
@@ -38,7 +38,7 @@ function home(){
 }
 
 # @param $1: オプション文字列
-function select_option(){
+select_option(){
   option=$1
   case $option in
     "Add Password"|"a"|"A")
@@ -57,7 +57,7 @@ function select_option(){
   esac
 }
 
-function add_password() {
+add_password() {
   read -p "サービス名を入力してください：" service
   read -p "ユーザー名を入力してください：" user
   read -sp "パスワードを入力してください：" pass
@@ -65,7 +65,7 @@ function add_password() {
   gpg_add "${service}:${user}:${pass}"
 }
 
-function get_password() {
+get_password() {
   exist=$(gpg -q -d --batch --yes --passphrase "${PHRASE}" "${GPG_FILE}")
   read -p "サービス名を入力してください：" service
   matchs=$(echo "${exist}" | grep "^${service}:.\+:.\+$")
@@ -81,7 +81,7 @@ function get_password() {
 }
 
 # @param $1: 追加する行の文字列、改行なし
-function gpg_add () {
+gpg_add () {
   line=$1
   exist=$(gpg -q -d --batch --yes --passphrase "${PHRASE}" "${GPG_FILE}")
   echo -e "${line}\n${exist}" | gpg -q -c --batch --yes --passphrase "${PHRASE}" --output "${GPG_FILE}"
